@@ -24,6 +24,14 @@ module.exports = new function(){
         }
     };
 
+    self.get = function(key){
+        return key_totals.get(key)
+    };
+
+    self.clear = function(){
+        key_totals.clear()
+    };
+
     self.startPersisting = function(){
         interval = setInterval(function(){
             self.persist()
@@ -61,7 +69,7 @@ module.exports = new function(){
             //[{key: "asd", value: 42}]
             var newNumbers = self.buildInsertionArray();
             var newKeys = _.map(newNumbers, "key");
-            key_totals.clear();
+            self.clear();
             //find all extant keys in database, return
             return knex("numbers").select("*").whereIn("key", newKeys)
             .then(function(numbers){
