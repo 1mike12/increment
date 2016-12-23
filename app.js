@@ -22,7 +22,7 @@ app.use(BodyParser.urlencoded({extended: true}));
 
 var IncrementService = require("./IncrementService");
 
-// IncrementService.startPersisting();
+IncrementService.startPersisting();
 
 app.post('/increment', function(req, res){
 

@@ -27,7 +27,7 @@ module.exports = new function(){
     self.startPersisting = function(){
         interval = setInterval(function(){
             self.persist()
-        }, 9000)
+        }, 9900)
     };
 
     self.stopPersisting = function(){
