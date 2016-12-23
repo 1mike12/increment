@@ -29,11 +29,13 @@ app.post('/increment', function(req, res){
     var body = req.body;
     var key = body.key;
     var value = body.value;
-
-    IncrementService.set(key, value);
-    res.sendStatus(200)
+    if (Number.isInteger(value) && key !== undefined && value) {
+        IncrementService.set(key, value);
+        res.sendStatus(200)
+    } else {
+        res.sendStatus(422)
+    }
 });
-
 
 
 app.get('/numbers', function(req, res){
@@ -52,7 +54,7 @@ app.get('/persist', function(req, res){
     })
 });
 
-var port = 3333;
+var port = process.env.NODE_ENV === "testing" ? 3334 : 3333;
 var server = app.listen(port, function(){
     var host = server.address().address;
     var port = server.address().port;
