@@ -1,0 +1,35 @@
+body {
+    background: url(//cdn2.hubspot.net/hubfs/305687/homepage/hero-bg-gradient.jpg?t=1480632214018) no-repeat top center;
+    background: #4baad4;
+    background: -moz-linear-gradient(-140deg, #613f7e -30%, #3f85ad 100%);
+    background: -webkit-linear-gradient(-140deg, #613f7e -30%, #3f85ad 100%);
+    background: linear-gradient(-140deg, #613f7e -30%, #3f85ad 100%);
+    margin: 0;
+}
+
+.grey {
+    color: #728d96;
+}
+a {
+    color: #FFF;
+    font-weight: bold;
+}
+
+kbd {
+    padding: 2px 4px;
+    font-size: 90%;
+    color: #fff;
+    background-color: #333;
+    border-radius: 3px;
+    -webkit-box-shadow: inset 0 -1px 0 rgba(0, 0, 0, .25);
+    box-shadow: inset 0 -1px 0 rgba(0, 0, 0, .25);
+}
+
+.blue {
+    color: #4baad4
+}
+
+md-card {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #FFF;
+}

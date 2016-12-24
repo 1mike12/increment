@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
+    <link rel="stylesheet" href="main.css">
+</head>
+<body ng-cloak>
+<div style="padding:48px">
+    <md-card>
+        <div layout="column" layout-gt-sm="row">
+            <div flex>
+                <md-card-title>
+                    <md-card-title-text>
+                        <span class="md-headline">Setup</span>
+                    </md-card-title-text>
+                </md-card-title>
+                <md-card-content>
+                    <p>
+                        <kbd>npm install knex mocha -g</kbd>
+                    </p>
+                    <p>
+                        <kbd>npm run init</kbd>
+                    </p>
+
+                </md-card-content>
+            </div>
+            <md-divider></md-divider>
+            <div flex>
+                <md-card-title>
+                    <md-card-title-text>
+                        <span class="md-headline">Running</span>
+                    </md-card-title-text>
+                </md-card-title>
+                <md-card-content>
+                    <p>
+                        <kbd>node app.js</kbd>
+                    </p>
+                </md-card-content>
+            </div>
+        </div>
+
+    </md-card>
+
+    <md-card>
+        <md-card-title>
+            <md-card-title-text>
+                <span class="md-headline">Design Strategy</span>
+            </md-card-title-text>
+        </md-card-title>
+        <md-card-content>
+            <p>
+                I decided to use node since it was a language that I was familiar with, and which also had fairly good
+                I/O
+                performance.
+            </p>
+            <p>
+                I rely on a query builder called <a href="http://knexjs.org/" target="_blank">knex</a> to make database
+                setup and
+                easier and save time from having to write raw sql.
+            </p>
+            <p>
+                I basically wanted to make a daemon that ran on an interval that was less than 10 seconds, while traffic
+                from post requests were
+                buffered until the proper time to persist was reached. Since the throughput of sqlite writes is much
+                higher than that of node itself,
+                I felt it was ok to arbitrarily run the daemon every 5 seconds. Initially, through testing, the server
+                could only handle
+                ~400 requests/ second on my machine. I then changed the main app to take advantage of the multiple cpus
+                available.
+                To do this, I created child processes and make sure that they communicated all traffic to the master
+                process.
+
+                And as before, when the interval was reached, the master process would persist its data to the database.
+                After converting the server to utilize clusters, I was able to reach 2200 req / second
+            </p>
+            <md-divider></md-divider>
+            <md-card-title-text>
+                <h2 class="md-headline">Testing</h2>
+            </md-card-title-text>
+            <p>
+                Machine specs:
+            <ul>
+                <li>CPU: core i5 (4 logical)</li>
+                <li>Ram: 20 GB</li>
+            </ul>
+            </p>
+            <p>
+                Testing Process:
+                <br>
+                <kbd>ab -p increment_post.txt -T application/json -c 10 -n 50000 http://localhost:3333/increment</kbd>
+                <br><br>
+                With post data: <kbd>{"key":"a", 1}</kbd>
+            </p>
+        </md-card-content>
+    </md-card>
+</div>
+<div style="background: #FFF; padding: 80px; text-align: center">
+    <h1 class="blue">Thanks for assigning an exercise that wasn't contrived and actually interesting to make :)</h1>
+    <h2 class="blue">- Mike</h2>
+    <md-divider></md-divider>
+    <div layout-gt-sm="row" style="margin-top:24px">
+        <div flex>
+            <md-button class="md-raised" href="https://github.com/1mike12" target="_blank">Github</md-button>
+            <md-button class="md-raised" href="https://www.linkedin.com/in/mikeqin1" target="_blank">Linkedin</md-button>
+        </div>
+    </div>
+</div>
+
+
+<!-- Angular Material requires Angular.js Libraries -->
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
+
+<!-- Angular Material Library -->
+<script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

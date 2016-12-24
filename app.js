@@ -25,10 +25,15 @@ if (cluster.isMaster && clusterEnabled) {
     var app = express();
     var helmet = require("helmet");
     var BodyParser = require("body-parser");
+    var Promise = require("bluebird");
+    var readFile = Promise.promisify(require("fs").readFile);
+    var marked = require("marked");
+
     app.use(BodyParser.json());
     app.use(BodyParser.urlencoded({extended: true}));
     app.use(helmet.hidePoweredBy({setTo: 'PHP 4.2.0'}));
     app.use(helmet.noSniff());
+    app.use(express.static(__dirname + '/public'));
 
     app.post('/increment', function(req, res){
         var body = req.body;
