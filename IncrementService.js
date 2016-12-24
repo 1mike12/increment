@@ -104,22 +104,22 @@ module.exports = new function(){
                 console.log("insertCount: " + JSON.stringify(insertNumbers));
 
                 var rawUpdate = "";
-
+                var promises = [];
                 _.forEach(updateNumbers, function(obj){
-                    // var tempInsert = knex('numbers')
-                    // .where('key', '=', obj.key)
-                    // .update({
-                    //     value: obj.value
-                    // }).toString();
+                    var updatePromise = knex('numbers')
+                    .where('key', '=', obj.key)
+                    .update({
+                        value: obj.value
+                    });
+                    promises.push(updatePromise);
+
                     // rawUpdate += tempInsert + "; ";
-                    rawUpdate += "UPDATE numbers set value = " + obj.value + " WHERE key = '" + obj.key + "'; "
+                    // rawUpdate += "UPDATE numbers set value = " + obj.value + " WHERE key = '" + obj.key + "'; "
                 });
 
-                //"update number where key ;
-                var promises = [];
-                if (updateNumbers.length > 0) {
-                    promises.push(knex.raw(rawUpdate))
-                }
+                // if (updateNumbers.length > 0) {
+                //     promises.push(knex.raw(rawUpdate))
+                // }
 
                 if (insertNumbers.length > 0) {
                     promises.push(knex("numbers").insert(insertNumbers))
