@@ -7,6 +7,7 @@ var knexfile = require("./knexfile")[env];
 var knex = require('knex')(knexfile);
 var _ = require("lodash");
 var Promise = require("bluebird");
+var moment = require("moment");
 
 module.exports = new function(){
     var self = this;
@@ -14,6 +15,7 @@ module.exports = new function(){
     var key_totals = new Map();
 
     var interval;
+    var lastRun = moment();
 
     self.set = function(key, value){
         var oldValue = key_totals.get(key);
@@ -33,9 +35,11 @@ module.exports = new function(){
     };
 
     self.startPersisting = function(){
-        interval = setInterval(function(){
-            self.persist()
-        }, 9900)
+        if (!interval){
+            interval = setInterval(function(){
+                self.persist()
+            }, 9500)
+        }
     };
 
     self.stopPersisting = function(){
@@ -117,6 +121,17 @@ module.exports = new function(){
                     promises.push(knex("numbers").insert(insertNumbers))
                 }
                 return Promise.all(promises)
+                .then(function(){
+                    var now = moment();
+                    var delta = now.diff(lastRun);
+                    if (delta > 10000){
+                        throw new Error("longer than 10s since last persist")
+                    }
+                    console.log(delta + " ms since last persist");
+                    lastRun = now;
+
+                    return Promise.resolve();
+                })
             });
 
         } else {
