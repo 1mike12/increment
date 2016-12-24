@@ -4,16 +4,23 @@ var cluster = require('cluster'),
 var clusterEnabled = true;
 
 if (cluster.isMaster && clusterEnabled) {
+
+    var IncrementService = require("./IncrementService");
+    IncrementService.startPersisting();
+
     for (var i = 0; i < numCPUs; i++) {
-        cluster.fork();
+        var worker = cluster.fork();
+        worker.on('message', function(msg) {
+            IncrementService.set(msg.key, msg.value)
+        });
     }
     cluster.on('exit', function(worker){
         console.log('Worker %d died :(', worker.id);
         cluster.fork();
     });
+
 } else {
-    var IncrementService = require("./IncrementService");
-    IncrementService.startPersisting();
+
     var express = require("express");
     var app = express();
     var BodyParser = require("body-parser");
@@ -25,7 +32,8 @@ if (cluster.isMaster && clusterEnabled) {
         var key = body.key;
         var value = body.value;
         if (Number.isInteger(value) && key !== undefined && value) {
-            IncrementService.set(key, value);
+
+            process.send({key: key , value: value});
             res.sendStatus(200)
         } else {
             res.sendStatus(422)
