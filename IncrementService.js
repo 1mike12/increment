@@ -4,7 +4,7 @@
 
 var env = process.env.NODE_ENV === "testing" ? "testing" : "development";
 var knexfile = require("./knexfile")[env];
-var knex = require('knex')(knexfile);
+var knex = require("./db").knex;
 var _ = require("lodash");
 var Promise = require("bluebird");
 var moment = require("moment");
@@ -35,7 +35,7 @@ module.exports = new function(){
     };
 
     self.startPersisting = function(){
-        if (!interval){
+        if (!interval) {
             interval = setInterval(function(){
                 self.persist()
             }, 9500)
@@ -66,7 +66,7 @@ module.exports = new function(){
 
     self.persist = function(){
         // take all stuff in map, convert to a knex compatible format
-        console.log("persisted run");
+        // console.log("persisted run");
 
         if (key_totals.size > 0) {
 
@@ -78,6 +78,7 @@ module.exports = new function(){
             return knex("numbers").select("*").whereIn("key", newKeys)
             .then(function(numbers){
                 var extantNumbers = numbers;
+                console.log("extant numbers: " + JSON.stringify(numbers));
                 var extantKeyValueMap = new Map();
 
                 _.forEach(extantNumbers, function(number){
@@ -99,16 +100,19 @@ module.exports = new function(){
                     }
                 });
 
+                console.log("updateCount: " + JSON.stringify(updateNumbers));
+                console.log("insertCount: " + JSON.stringify(insertNumbers));
 
                 var rawUpdate = "";
 
                 _.forEach(updateNumbers, function(obj){
-                    var tempInsert = knex('numbers')
-                    .where('key', '=', obj.key)
-                    .update({
-                        value: obj.value
-                    }).toString();
-                    rawUpdate += tempInsert + "; ";
+                    // var tempInsert = knex('numbers')
+                    // .where('key', '=', obj.key)
+                    // .update({
+                    //     value: obj.value
+                    // }).toString();
+                    // rawUpdate += tempInsert + "; ";
+                    rawUpdate += "UPDATE numbers set value = " + obj.value + " WHERE key = '" + obj.key + "'; "
                 });
 
                 //"update number where key ;
@@ -124,9 +128,9 @@ module.exports = new function(){
                 .then(function(){
                     var now = moment();
                     var delta = now.diff(lastRun);
-                    if (delta > 10000){
-                        throw new Error("longer than 10s since last persist")
-                    }
+                    // if (delta > 10000){
+                    //     throw new Error("longer than 10s since last persist")
+                    // }
                     console.log(delta + " ms since last persist");
                     lastRun = now;
 

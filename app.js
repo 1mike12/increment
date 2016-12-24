@@ -1,9 +1,11 @@
 var cluster = require('cluster'),
     numCPUs = require('os').cpus().length;
 
+var clusterEnabled = false;
+var knex = require("./db").knex;
 
 
-if (cluster.isMaster) {
+if (cluster.isMaster && clusterEnabled) {
     for (var i = 0; i < numCPUs; i++) {
         cluster.fork();
     }
