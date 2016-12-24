@@ -48,6 +48,9 @@ describe("persistence", function(){
 
             return IncrementService.persist();
         })
+        .then(function(){
+            return knex("numbers").where({key: "future"}).select("*")
+        })
         .then(function(number){
             expect(IncrementService.get("future")).to.be.undefined;
             expect(number.length).to.be.equal(1)
