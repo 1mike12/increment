@@ -13,7 +13,7 @@ module.exports = {
         seeds: {
             directory: './migrations/seeds'
         },
-        debug: true
+        debug: false
 
     },
     testing: {
@@ -30,20 +30,5 @@ module.exports = {
         },
         debug: false
 
-    },
-    //faster in-memory sqlite db, but shit doesn't work with FK and other parameters not created from migration
-    // testing: {
-    //     client: 'sqlite3',
-    //     connection: {
-    //         filename: ':memory:'
-    //     },
-    //     migrations: {
-    //         tableName: 'migrations',
-    //         directory: './migrations'
-    //     },
-    //     seeds: {
-    //         directory: './migrations/seeds'
-    //     },
-    //     debug: true
-    // },
+    }
 };
