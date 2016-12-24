@@ -31,8 +31,8 @@ build/Release
 # Dependency directories
 node_modules
 .idea
-db.sqlite
-db_test.sqlite
+#db.sqlite
+#db_test.sqlite
 jspm_packages
 
 # Optional npm cache directory
