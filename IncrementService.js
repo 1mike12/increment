@@ -15,7 +15,7 @@ module.exports = new function(){
     var key_totals = new Map();
 
     var interval;
-    var lastRun = moment();
+    var lastRun;
 
     self.set = function(key, value){
         var oldValue = key_totals.get(key);
@@ -38,7 +38,7 @@ module.exports = new function(){
         if (!interval) {
             interval = setInterval(function(){
                 self.persist()
-            }, 9500)
+            }, 5e3)
         }
     };
 
@@ -117,23 +117,22 @@ module.exports = new function(){
                     // rawUpdate += "UPDATE numbers set value = " + obj.value + " WHERE key = '" + obj.key + "'; "
                 });
 
-                // if (updateNumbers.length > 0) {
-                //     promises.push(knex.raw(rawUpdate))
-                // }
-
                 if (insertNumbers.length > 0) {
                     promises.push(knex("numbers").insert(insertNumbers))
                 }
                 return Promise.all(promises)
                 .then(function(){
-                    var now = moment();
-                    var delta = now.diff(lastRun);
-                    // if (delta > 10000){
-                    //     throw new Error("longer than 10s since last persist")
-                    // }
-                    console.log(delta + " ms since last persist");
-                    lastRun = now;
-
+                    if (lastRun === undefined){
+                        lastRun = moment()
+                    } else {
+                        var now = moment();
+                        var delta = now.diff(lastRun);
+                        lastRun = now;
+                        console.log(delta + " ms since last persist");
+                        if (delta > 10e3){
+                            throw new Error("longer than 10s since last persist")
+                        }
+                    }
                     return Promise.resolve();
                 })
             });
