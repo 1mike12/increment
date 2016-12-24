@@ -4,7 +4,7 @@ module.exports = {
     development: {
         client: 'sqlite3',
         connection: {
-            filename: "./db.sqlite"
+            filename: "./numbers.db"
         },
         migrations: {
             tableName: 'migrations',
@@ -19,7 +19,7 @@ module.exports = {
     testing: {
         client: 'sqlite3',
         connection: {
-            filename: "./db_test.sqlite"
+            filename: "./numbers_test.db"
         },
         migrations: {
             tableName: 'migrations',
