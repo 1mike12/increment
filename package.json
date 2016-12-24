@@ -14,7 +14,6 @@
     "bluebird": "^3.4.7",
     "body-parser": "^1.15.1",
     "cluster": "^0.7.7",
-    "cron": "^1.1.0",
     "express": "^4.13.3",
     "helmet": "^2.3.0",
     "knex": "^0.12.6",
@@ -25,20 +24,6 @@
   },
   "readmeFilename": "README.md",
   "scripts": {
-    "//": "------------setup--------------------------",
-    "firstTime": "npm install && npm run installGlobals && npm run installLibraries && npm run buildDev && npm run createDatabase && npm run db-refresh",
-    "createDatabase": "node _setup/CreateDatabase create ebay && node_setup/CreateDatbase create ebay_test",
-    "createFiles": "node _setup/create_files",
-    "installGlobals": "node packageScript.js",
-    "installLibraries": "bower install --allow-root",
-    "buildDev": "gulp default",
-    "///": "-------------db scripts-------------------------------",
-    "db-rollback": "knex migrate:rollback",
-    "db-migrate": "knex migrate:latest",
-    "db-real": "knex migrate:rollback && knex migrate:latest && node seeder rs real",
-    "db-seed": "node seed/_seed refresh",
-    "db": "npm run db-rollback && npm run db-migrate && npm run db-seed",
-    "////": "----post install-------------",
-    "post-receive": "npm install && bower install --allow-root && gulp build && pm2 restart app"
+    "init": "npm install && knex migrate:latest"
   }
 }

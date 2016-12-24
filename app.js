@@ -23,9 +23,12 @@ if (cluster.isMaster && clusterEnabled) {
 
     var express = require("express");
     var app = express();
+    var helmet = require("helmet");
     var BodyParser = require("body-parser");
     app.use(BodyParser.json());
     app.use(BodyParser.urlencoded({extended: true}));
+    app.use(helmet.hidePoweredBy({setTo: 'PHP 4.2.0'}));
+    app.use(helmet.noSniff());
 
     app.post('/increment', function(req, res){
         var body = req.body;
@@ -39,7 +42,6 @@ if (cluster.isMaster && clusterEnabled) {
             res.sendStatus(422)
         }
     });
-
 
     app.get('/numbers', function(req, res){
 
