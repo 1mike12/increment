@@ -1,9 +1,9 @@
 var cluster = require('cluster');
-var InputBuffer = require("./InputBuffer");
 var _ = require("lodash");
+var path = require("path");
 
 const CPUS = require('os').cpus().length;
-const CLUSTER_ON = true;
+const CLUSTER_ON = false;
 
 if (cluster.isMaster && CLUSTER_ON) {
 
@@ -26,6 +26,8 @@ if (cluster.isMaster && CLUSTER_ON) {
     });
 
 } else {
+    var InputBuffer = require("./InputBuffer");
+    var fs = require("fs-promise");
 
     if (CLUSTER_ON) {
         var inputBuffer = new InputBuffer(1e3);
@@ -71,6 +73,44 @@ if (cluster.isMaster && CLUSTER_ON) {
                     res.writeHead(400, 'Error', {'Content-Type': 'text/html'});
                     res.end('');
                 }
+            })
+        } else if (req.method == 'GET') {
+            var base = "./public";
+            var filePath = base + req.url;
+
+            if (filePath === "./public/")
+                filePath = './public/index.html';
+            var extensionName = path.extname(filePath);
+            var contentType = 'text/html';
+            switch (extensionName) {
+                case '.js':
+                    contentType = 'text/javascript';
+                    break;
+                case '.css':
+                    contentType = 'text/css';
+                    break;
+                case '.json':
+                    contentType = 'application/json';
+                    break;
+                case '.png':
+                    contentType = 'image/png';
+                    break;
+                case '.jpg':
+                    contentType = 'image/jpg';
+                    break;
+                case '.wav':
+                    contentType = 'audio/wav';
+                    break;
+            }
+            fs.readFile(filePath)
+            .then(function(content){
+                res.writeHead(200, {'Content-Type': contentType});
+                res.end(content, 'utf-8');
+            })
+            .catch(function(){
+                res.writeHead(500);
+                res.end("error");
+                res.end();
             })
         }
     })

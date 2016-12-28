@@ -15,6 +15,7 @@
     "body-parser": "^1.15.1",
     "cluster": "^0.7.7",
     "express": "^4.13.3",
+    "fs-promise": "^1.0.0",
     "knex": "^0.12.6",
     "lodash": "^4.13.1",
     "marked": "^0.3.6",
