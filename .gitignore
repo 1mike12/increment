@@ -33,6 +33,8 @@ node_modules
 .idea
 numbers.db
 numbers_test.db
+db.sqlite
+
 jspm_packages
 
 # Optional npm cache directory
