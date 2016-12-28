@@ -46,14 +46,10 @@ module.exports = new function(){
         clearInterval(interval)
     };
 
-    self.getSavedValue = function(key){
+    self.getSavedValues = function(key){
         return knex(TABLE_NAME).where({
             key: key
         }).select('value')
-    };
-
-    self.getAllSavedValues = function(){
-        return knex(TABLE_NAME).select('*')
     };
 
     self.buildInsertionArray = function(){

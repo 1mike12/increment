@@ -66,45 +66,6 @@ if (cluster.isMaster && CLUSTER_ON) {
     })
     .listen(3333);
     console.log('started server on port:' + port);
-    //
-    // app.use(express.static(__dirname + '/public'));
-
-    // app.post('/increment', function(req, res){
-    //     var body = req.body;
-    //     var key = body.key;
-    //     var value = body.value;
-    //     if (Number.isInteger(value) && key !== undefined && value) {
-    //
-    //         process.send({key: key, value: value});
-    //         res.sendStatus(200)
-    //     } else {
-    //         res.sendStatus(422)
-    //     }
-    // });
-    //
-    // app.get('/numbers', function(req, res){
-    //
-    //     return IncrementService.getAllSavedValues()
-    //     .then(function(output){
-    //         res.send(output)
-    //     })
-    // });
-    //
-    // app.get('/persist', function(req, res){
-    //
-    //     return IncrementService.persist()
-    //     .then(function(){
-    //         res.send("persisted")
-    //     })
-    // });
-    //
-
-    // var server = app.listen(port, function(){
-    //     var host = server.address().address;
-    //     var port = server.address().port;
-    //     console.log('started server on port:' + port);
-    // });
-
     module.exports = app;
 }
 
