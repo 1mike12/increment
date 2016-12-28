@@ -8,6 +8,7 @@ var knex = require("./db").knex;
 var _ = require("lodash");
 var Promise = require("bluebird");
 var moment = require("moment");
+var _ = require("lodash");
 
 module.exports = new function(){
     var self = this;
@@ -24,6 +25,12 @@ module.exports = new function(){
         } else {
             key_totals.set(key, value)
         }
+    };
+
+    self.setByArray = function(array){
+        _.forEach(array, function(json){
+            self.set(json.key, json.value)
+        })
     };
 
     self.get = function(key){
@@ -118,14 +125,14 @@ module.exports = new function(){
                 }
                 return Promise.all(promises)
                 .then(function(){
-                    if (lastRun === undefined){
+                    if (lastRun === undefined) {
                         lastRun = moment()
                     } else {
                         var now = moment();
                         var delta = now.diff(lastRun);
                         lastRun = now;
                         console.log(delta + " ms since last persist");
-                        if (delta > 10e3){
+                        if (delta > 10e3) {
                             throw new Error("longer than 10s since last persist")
                         }
                     }

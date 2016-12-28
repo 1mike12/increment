@@ -1,6 +1,8 @@
 var cluster = require('cluster');
 numCPUs = require('os').cpus().length;
 const CLUSTER_ON = true;
+var InputBuffer = require("./InputBuffer");
+var _ = require("lodash");
 
 if (cluster.isMaster && CLUSTER_ON) {
 
@@ -10,7 +12,11 @@ if (cluster.isMaster && CLUSTER_ON) {
     for (var i = 0; i < numCPUs; i++) {
         var worker = cluster.fork();
         worker.on('message', function(msg){
-            IncrementService.set(msg.key, msg.value)
+            if (_.isArray(msg)) {
+                IncrementService.setByArray(msg)
+            } else {
+                IncrementService.set(msg.key, msg.value)
+            }
         });
     }
     cluster.on('exit', function(worker){
@@ -20,7 +26,10 @@ if (cluster.isMaster && CLUSTER_ON) {
 
 } else {
 
-    if (!CLUSTER_ON) {
+    if (CLUSTER_ON) {
+        var inputBuffer = new InputBuffer(2e3);
+        inputBuffer.startSynchronizing();
+    } else {
         var IncrementService = require("./IncrementService");
         IncrementService.startPersisting();
     }
@@ -30,7 +39,7 @@ if (cluster.isMaster && CLUSTER_ON) {
 
     var handleInput = function(json){
         if (CLUSTER_ON) {
-            process.send(json);
+            inputBuffer.set(json.key, json.value)
         } else {
             IncrementService.set(json.key, json.value)
         }
