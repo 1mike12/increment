@@ -70,15 +70,21 @@
                 could only handle
                 ~400 requests/ second on my machine. I then changed the main app to take advantage of the multiple cpus
                 available.
-                To do this, I created child processes and make sure that they communicated all traffic to the master
+                I created child processes and make sure that they communicated all traffic to the master
                 process.
-
+                <br><br>
                 And as before, when the interval was reached, the master process would persist its data to the database.
-                After converting the server to utilize clusters, I was able to reach 2200 req / second
+                After converting the server to utilize clusters, I was able to reach 2200 req / second. I also added a buffer between
+                the worker and master communication, that way there would be less strain on the messaging system.
+
+                I then swapped out express for node's default http module, which has less frills and turned out to be more performant.
+                Ultimately, I was able to hit around 3500 req /s, after running multiple apache bench batches as v8 continues
+                its optimizations after the first batch.
+
             </p>
             <md-divider></md-divider>
             <md-card-title-text>
-                <h2 class="md-headline">Testing</h2>
+                <h2 class="md-headline">Testing Procedure</h2>
             </md-card-title-text>
             <p>
                 Machine specs:
