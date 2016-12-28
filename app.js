@@ -1,15 +1,16 @@
 var cluster = require('cluster');
-numCPUs = require('os').cpus().length;
-const CLUSTER_ON = true;
 var InputBuffer = require("./InputBuffer");
 var _ = require("lodash");
+
+const CPUS = require('os').cpus().length;
+const CLUSTER_ON = true;
 
 if (cluster.isMaster && CLUSTER_ON) {
 
     var IncrementService = require("./IncrementService");
     IncrementService.startPersisting();
 
-    for (var i = 0; i < numCPUs; i++) {
+    for (var i = 0; i < CPUS; i++) {
         var worker = cluster.fork();
         worker.on('message', function(msg){
             if (_.isArray(msg)) {
@@ -27,8 +28,13 @@ if (cluster.isMaster && CLUSTER_ON) {
 } else {
 
     if (CLUSTER_ON) {
-        var inputBuffer = new InputBuffer(2e3);
-        inputBuffer.startSynchronizing();
+        var syncInterval = 1e3;
+        var delta = syncInterval / CPUS;
+        var clusterId = cluster.worker.id; //[1,n]
+        var startOffset = (clusterId - 1) * delta;
+        var inputBuffer = new InputBuffer(syncInterval);
+        setTimeout(inputBuffer.startSynchronizing(), startOffset);
+
     } else {
         var IncrementService = require("./IncrementService");
         IncrementService.startPersisting();

@@ -2,7 +2,7 @@ var Class = function(runInterval){
     this.runInterval = runInterval;
     this.interval = null;
 };
-
+var cluster = require('cluster');
 var key_totals = new Map();
 
 Class.prototype.startSynchronizing = function(){
@@ -19,6 +19,7 @@ Class.prototype.stopSynchronizing = function(){
 };
 
 var synchronize = function(){
+    console.log("Synchronize: " + cluster.worker.id + " " + new Date().getMilliseconds());
     if (key_totals.size > 0) {
         var newNumbers = buildInsertionArray();
         key_totals.clear();
