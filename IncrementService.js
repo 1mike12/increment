@@ -133,12 +133,12 @@ module.exports = new function(){
             var now = moment();
             var delta = now.diff(lastRun);
             lastRun = now;
+            if (delta > 10e3 && process.env.NODE_ENV !== "testing") {
+                throw new Error("longer than 10s since last persist")
+            }
         }
         if (delta) {
             console.log(delta + " ms since last persist");
-        }
-        if (delta > 10e3) {
-            throw new Error("longer than 10s since last persist")
         }
     }
 };
