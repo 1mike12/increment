@@ -2,7 +2,7 @@ var Class = function(runInterval){
     this.runInterval = runInterval;
     this.interval = null;
 };
-var cluster = require('cluster');
+
 var key_totals = new Map();
 
 Class.prototype.startSynchronizing = function(){
@@ -42,6 +42,5 @@ Class.prototype.set = function(key, value){
         key_totals.set(key, value)
     }
 };
-
 
 module.exports = Class;

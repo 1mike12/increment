@@ -8,8 +8,8 @@ var knex = require("./db").knex;
 var _ = require("lodash");
 var Promise = require("bluebird");
 var moment = require("moment");
-var _ = require("lodash");
 
+const PERSIST_INTERVAL = 5e3;
 module.exports = new function(){
     var self = this;
     var TABLE_NAME = "numbers";
@@ -45,7 +45,7 @@ module.exports = new function(){
         if (!interval) {
             interval = setInterval(function(){
                 self.persist()
-            }, 5e3)
+            }, PERSIST_INTERVAL)
         }
     };
 
@@ -68,16 +68,13 @@ module.exports = new function(){
     };
 
     self.persist = function(){
-        // take all stuff in map, convert to a knex compatible format
-        // console.log("persisted run");
-
         if (key_totals.size > 0) {
 
             //[{key: "asd", value: 42}]
             var newNumbers = self.buildInsertionArray();
             var newKeys = _.map(newNumbers, "key");
             self.clear();
-            //find all extant keys in database, return
+            //find all extant keys in database
             return knex("numbers").select("*").whereIn("key", newKeys)
             .then(function(numbers){
                 var extantNumbers = numbers;
@@ -103,10 +100,6 @@ module.exports = new function(){
                     }
                 });
 
-                console.log("updateCount: " + JSON.stringify(updateNumbers));
-                console.log("insertCount: " + JSON.stringify(insertNumbers));
-
-                var rawUpdate = "";
                 var promises = [];
                 _.forEach(updateNumbers, function(obj){
                     var updatePromise = knex('numbers')
@@ -115,9 +108,6 @@ module.exports = new function(){
                         value: obj.value
                     });
                     promises.push(updatePromise);
-
-                    // rawUpdate += tempInsert + "; ";
-                    // rawUpdate += "UPDATE numbers set value = " + obj.value + " WHERE key = '" + obj.key + "'; "
                 });
 
                 if (insertNumbers.length > 0) {
@@ -125,23 +115,30 @@ module.exports = new function(){
                 }
                 return Promise.all(promises)
                 .then(function(){
-                    if (lastRun === undefined) {
-                        lastRun = moment()
-                    } else {
-                        var now = moment();
-                        var delta = now.diff(lastRun);
-                        lastRun = now;
-                        console.log(delta + " ms since last persist");
-                        if (delta > 10e3) {
-                            throw new Error("longer than 10s since last persist")
-                        }
-                    }
+                    recordDelta();
                     return Promise.resolve();
                 })
             });
 
         } else {
+            recordDelta();
             return Promise.resolve();
+        }
+    };
+
+    var recordDelta = function(){
+        if (lastRun === undefined) {
+            lastRun = moment()
+        } else {
+            var now = moment();
+            var delta = now.diff(lastRun);
+            lastRun = now;
+        }
+        if (delta) {
+            console.log(delta + " ms since last persist");
+        }
+        if (delta > 10e3) {
+            throw new Error("longer than 10s since last persist")
         }
     }
 };
