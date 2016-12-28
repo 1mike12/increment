@@ -4,7 +4,7 @@
   "description": "appcues",
   "main": "app.js",
   "author": "",
-  "license": "ISC",
+  "license": "",
   "devDependencies": {
     "chai": "^3.5.0",
     "chai-http": "^3.0.0",
@@ -12,9 +12,7 @@
   },
   "dependencies": {
     "bluebird": "^3.4.7",
-    "body-parser": "^1.15.1",
     "cluster": "^0.7.7",
-    "express": "^4.13.3",
     "fs-promise": "^1.0.0",
     "knex": "^0.12.6",
     "lodash": "^4.13.1",

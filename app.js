@@ -3,7 +3,7 @@ var _ = require("lodash");
 var path = require("path");
 
 const CPUS = require('os').cpus().length;
-const CLUSTER_ON = false;
+const CLUSTER_ON = true;
 
 if (cluster.isMaster && CLUSTER_ON) {
 
