@@ -28,13 +28,8 @@ if (cluster.isMaster && CLUSTER_ON) {
 } else {
 
     if (CLUSTER_ON) {
-        var syncInterval = 1e3;
-        var delta = syncInterval / CPUS;
-        var clusterId = cluster.worker.id; //[1,n]
-        var startOffset = (clusterId - 1) * delta;
-        var inputBuffer = new InputBuffer(syncInterval);
-        setTimeout(inputBuffer.startSynchronizing(), startOffset);
-
+        var inputBuffer = new InputBuffer(1e3);
+        inputBuffer.startSynchronizing()
     } else {
         var IncrementService = require("./IncrementService");
         IncrementService.startPersisting();

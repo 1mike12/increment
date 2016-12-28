@@ -19,7 +19,6 @@ Class.prototype.stopSynchronizing = function(){
 };
 
 var synchronize = function(){
-    console.log("Synchronize: " + cluster.worker.id + " " + new Date().getMilliseconds());
     if (key_totals.size > 0) {
         var newNumbers = buildInsertionArray();
         key_totals.clear();
